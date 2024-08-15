@@ -108,6 +108,10 @@ export interface Bank {
   phone?: string;
   active?: boolean;
   bic?: string;
+  create_date?: string;
+  write_date?: string
+  create_uid?: string
+  write_uid?: string
 }
 
 export interface BankAccount {
