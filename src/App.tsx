@@ -27,8 +27,9 @@ import ContactosSidebar from './components/sidebar/ContactosSidebar';
 import Contactos from './pages/contactos/Contactos';
 import Contacto from './components/formularios/Contacto';
 import BankTable from './components/res_bank/BankTable';
-import BankFormEdit from './components/res_bank/BankFormEdit';
 import BankFormContainer from './components/res_bank/BankFormContainer';
+import BankEditPage from './modules/res_bank/pages/BankEditPage';
+import BankCreatePage from './modules/res_bank/pages/BankCreatePage';
 
 const App: React.FC = () => {
   const client = new Realtime({
@@ -73,8 +74,8 @@ const App: React.FC = () => {
                         <Route path="/contacto/:id" element={<Contacto/>} />
                         <Route path="/contacto/nuevo" element={<Contacto/>} />
                         <Route path="/contactos/bancos" element={<BankTable/>} />
-                        <Route path="/contactos/banco/:id" element={<BankFormEdit/>} />
-                        <Route path="/contactos/banco/nuevo" element={<BankFormContainer/>} />
+                        <Route path="/contactos/banco/:id" element={<BankEditPage/>} />
+                        <Route path="/contactos/banco/nuevo" element={<BankCreatePage/>} />
 
                       </Route>
                     </Routes>
