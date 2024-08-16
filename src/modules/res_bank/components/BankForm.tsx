@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { useBankForm } from '../hooks/useBankForm';
-import { BankTypes } from '../types/BankTypes';
+import { Bank } from '../types/BankTypes';
 
 interface BankFormProps {
-    bank?: BankTypes; // Para la edición, puede recibir una ubicación existente
+    bank?: Bank; // Para la edición, puede recibir una ubicación existente
   }
 
 const BankForm: React.FC<BankFormProps> = ({ bank }) => {

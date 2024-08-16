@@ -1,7 +1,7 @@
 import { supabase } from '../../../supabase/supabaseClient';
-import { BankTypes } from '../types/BankTypes';
+import { Bank } from '../types/BankTypes';
 
-export const fetchBankById = async (id: number): Promise<BankTypes | null> => {
+export const fetchBankById = async (id: number): Promise<Bank | null> => {
   const { data, error } = await supabase
     .from('res_bank')
     .select('*')
@@ -13,5 +13,5 @@ export const fetchBankById = async (id: number): Promise<BankTypes | null> => {
     return null;
   }
 
-  return data as BankTypes;
+  return data as Bank;
 };

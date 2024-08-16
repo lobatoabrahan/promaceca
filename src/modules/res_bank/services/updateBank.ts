@@ -1,19 +1,23 @@
-import { BankTypes } from '../types/BankTypes';
-/* import { supabase } from '../supabaseClient'; // Asegúrate de que el path al cliente Supabase es correcto
- */
-export const updateBank = async (bank: BankTypes): Promise<BankTypes | null> => {
-    console.log("updateBank",bank)
-  /* const { data, error } = await supabase
+import { supabase } from '../../../supabase/supabaseClient';
+import { bankMapper } from '../tools/BankMappers';
+import { Bank } from '../types/BankTypes';
+
+export const updateBank = async (bank: Bank): Promise<Bank | null> => {
+  const mappedBank = bankMapper(bank);
+  
+  const { id, ...bankWithoutId } = mappedBank;
+
+  const { data, error } = await supabase
     .from('res_bank')
-    .update(bank)
-    .eq('id', bank.id)
+    .update(bankWithoutId) 
+    .eq('id', id) 
     .select('*')
     .single();
 
   if (error) {
     console.error('Error updating bank:', error.message);
-    return null;
-  } */
+    throw new Error(`Failed to update bank: ${error.message}`);
+  }
 
-  return bank as BankTypes;
+  return data as Bank;
 };

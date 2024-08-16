@@ -1,4 +1,4 @@
-export interface BankTypes {
+export interface Bank {
     id?: number;
     name: string;
     street?: string;

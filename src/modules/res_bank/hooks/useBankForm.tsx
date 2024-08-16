@@ -1,18 +1,20 @@
 import { useForm } from 'antd/es/form/Form';
 import { useCallback, useState } from 'react';
 import { notification } from 'antd';
-import { BankTypes } from '../types/BankTypes';
+import { Bank } from '../types/BankTypes';
 import { updateBank } from '../services/updateBank';
 import { createBank } from '../services/createBank';
 
 export const useBankForm = () => {
   const [form] = useForm();
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<Bank|null>(null)
 
-  const onFinish = useCallback(async (values: BankTypes) => {
+  const onFinish = useCallback(async (values: Bank) => {
     try {
       setLoading(true);
-      if (values.id) {
+      if (data?.id) {
+        values.id = data.id
         // Editar banco existente
         await updateBank(values);
         notification.success({
@@ -36,10 +38,12 @@ export const useBankForm = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [data]);
 
-  const setFormValues = useCallback((bank: BankTypes) => {
+  const setFormValues = useCallback((bank: Bank) => {
+    console.log(bank)
     form.setFieldsValue(bank);
+    setData(bank)
   }, [form]);
 
   return { form, onFinish, setFormValues, loading };

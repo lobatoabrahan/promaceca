@@ -1,7 +1,7 @@
-import { BankTypes } from '../types/BankTypes';
+import { Bank } from '../types/BankTypes';
 /* import { supabase } from '../supabaseClient'; // Asegúrate de que el path al cliente Supabase es correcto
  */
-export const createBank = async (bank: Omit<BankTypes, 'id'>): Promise<BankTypes | null> => {
+export const createBank = async (bank: Omit<Bank, 'id'>): Promise<Bank | null> => {
     console.log("createBank",bank)
   /* const { data, error } = await supabase
     .from('res_bank')
@@ -14,5 +14,5 @@ export const createBank = async (bank: Omit<BankTypes, 'id'>): Promise<BankTypes
     return null;
   } */
 
-  return bank as BankTypes;
+  return bank as Bank;
 };
