@@ -1,17 +1,33 @@
-// hooks/useRealtimeBank.ts
-
 import { useEffect, useState } from 'react';
 import { Bank } from '../types/BankTypes';
 import { subscribeToBankChanges } from '../services/subscribeToBankChanges';
+import { fetchAllBanks } from '../services/fetchAllBanks';
 
 export const useRealtimeBank = () => {
   const [banks, setBanks] = useState<Bank[]>([]);
   const [hasUpdates, setHasUpdates] = useState<boolean>(false);
 
   useEffect(() => {
+    const loadBanks = async () => {
+      try {
+        const initialBanks = await fetchAllBanks();
+
+        // Verifica que initialBanks no sea undefined o null
+        if (!initialBanks) {
+          throw new Error('No banks data received');
+        }
+
+        setBanks(initialBanks);
+      } catch (err) {
+        console.error('Failed to load initial banks:', err);
+      }
+    };
+
+    loadBanks();
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleRealtimeUpdate = (payload: any) => {
-      setHasUpdates(true);  // Marca que hubo una actualización
+      setHasUpdates(true);
 
       switch (payload.eventType) {
         case 'INSERT':
@@ -35,12 +51,10 @@ export const useRealtimeBank = () => {
     };
   }, []);
 
-  // Opcional: Puedes incluir un efecto para resetear el estado de `hasUpdates` después de un tiempo
   useEffect(() => {
-    const resetUpdates = () => setHasUpdates(false);
     if (hasUpdates) {
-      const timer = setTimeout(resetUpdates, 300); // Por ejemplo, después de 3 segundos
-      return () => clearTimeout(timer);
+      // Puedes implementar lógica adicional para manejar actualizaciones, si es necesario
+      setHasUpdates(false);
     }
   }, [hasUpdates]);
 

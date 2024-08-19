@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { useBankForm } from '../hooks/useBankForm';
 import { Bank } from '../types/BankTypes';
+import BankSelect from './BankSelect';
 
 interface BankFormProps {
     bank?: Bank; // Para la edición, puede recibir una ubicación existente
@@ -21,6 +22,15 @@ const BankForm: React.FC<BankFormProps> = ({ bank }) => {
       form={form}
       onFinish={onFinish}
     >      
+    <Form.Item
+        name="bank"
+        label="Seleccione un banco"
+      >
+        <BankSelect
+          onSelect={(value) => form.setFieldsValue({ bank: value })}
+          value={form.getFieldValue('bank')}
+        />
+      </Form.Item>
       <Form.Item
         label="Name"
         name="name"
