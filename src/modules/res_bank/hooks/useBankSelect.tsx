@@ -7,6 +7,8 @@ export const useBankSelect = () => {
   const [banks, setBanks] = useState<{ label: string; value: number }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchText, setSearchText] = useState<string>('');
+
 
   const { banks: realtimeBanks, hasUpdates } = useRealtimeBank();
 
@@ -53,5 +55,15 @@ export const useBankSelect = () => {
     }
   }, [realtimeBanks, hasUpdates]);
 
-  return { banks, loading, error };
+  // Función para crear un nuevo banco
+  const onCreate = async () => {
+    console.log('Create button clicked. Search text:', searchText);
+  };
+
+  // Función para crear un nuevo banco y abrir el modal de edición
+  const onCreateAndEdit = async () => {
+    console.log('Create and Edit button clicked. Search text:', searchText);
+  };
+
+  return { banks, loading, error, onCreate, onCreateAndEdit, searchText, setSearchText };
 };
