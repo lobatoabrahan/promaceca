@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { fetchAllBanks } from '../services/fetchAllBanks';
 import { formatBankOptions } from '../tools/formatBankOptions';
 import { useRealtimeBank } from './useBankRealtime';
-
+/* import { createBank } from '../services/createBank';
+ */
 export const useBankSelect = () => {
   const [banks, setBanks] = useState<{ label: string; value: number }[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,8 +58,29 @@ export const useBankSelect = () => {
 
   // Función para crear un nuevo banco
   const onCreate = async () => {
-    console.log('Create button clicked. Search text:', searchText);
+    try {
+      if (searchText.trim() === '') {
+        throw new Error('Search text is empty. Cannot create a bank without a name.');
+      }
+  
+      // Simula una llamada a la API con un retraso de 3 segundos
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+  
+      // Llama a la función para crear un nuevo banco en la base de datos
+      const newBank = 1; /* await createBank({ name: searchText }); */
+  
+      // Verifica si la creación fue exitosa
+      if (newBank === 1 /* && newBank.id */) {
+        return 1; // Devuelve el ID simulado del nuevo banco
+      } else {
+        throw new Error("Failed to create a new bank.");
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to create a new bank.");
+    }
   };
+  
 
   // Función para crear un nuevo banco y abrir el modal de edición
   const onCreateAndEdit = async () => {
