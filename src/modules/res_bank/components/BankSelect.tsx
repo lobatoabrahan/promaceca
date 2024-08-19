@@ -20,6 +20,14 @@ const BankSelect: React.FC<BankSelectProps> = ({ onSelect, value }) => {
       options={banks}
       placeholder="Select a bank"
       style={{ width: '100%' }}
+      showSearch
+      filterOption={(input, option) => {
+        if (option && option.label) {
+          return option.label.toLowerCase().includes(input.toLowerCase());
+        }
+        return false;
+      }}
+      optionFilterProp="label"
     />
   );
 };
