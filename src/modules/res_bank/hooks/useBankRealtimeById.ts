@@ -36,7 +36,7 @@ export const useRealtimeBankById = (id: number | null) => {
       }
     };
 
-    const channel = subscribeToBankChanges(handleRealtimeUpdate);
+    const channel = subscribeToBankChanges(handleRealtimeUpdate,id);
 
     return () => {
       channel.unsubscribe();
