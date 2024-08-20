@@ -62,13 +62,13 @@ export const useBankSelect = () => {
       if (searchText.trim() === '') {
         throw new Error('Search text is empty. Cannot create a bank without a name.');
       }
-  
+
       // Simula una llamada a la API con un retraso de 3 segundos
       await new Promise((resolve) => setTimeout(resolve, 3000));
-  
+
       // Llama a la función para crear un nuevo banco en la base de datos
       const newBank = 1; /* await createBank({ name: searchText }); */
-  
+
       // Verifica si la creación fue exitosa
       if (newBank === 1 /* && newBank.id */) {
         return 1; // Devuelve el ID simulado del nuevo banco
@@ -80,11 +80,30 @@ export const useBankSelect = () => {
       throw new Error("Failed to create a new bank.");
     }
   };
-  
+
 
   // Función para crear un nuevo banco y abrir el modal de edición
   const onCreateAndEdit = async () => {
-    console.log('Create and Edit button clicked. Search text:', searchText);
+    try {
+      if (searchText.trim() === '') {
+        throw new Error('Search text is empty. Cannot create a bank without a name.');
+      }
+      // Simula una llamada a la API con un retraso de 3 segundos
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
+      // Llama a la función para crear un nuevo banco en la base de datos
+      const newBank = 1; /* await createBank({ name: searchText }); */
+
+      // Verifica si la creación fue exitosa
+      if (newBank === 1 /* && newBank.id */) {
+        return 1; // Devuelve el ID simulado del nuevo banco
+      } else {
+        throw new Error("Failed to create a new bank.");
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to create a new bank.");
+    }
   };
 
   return { banks, loading, error, onCreate, onCreateAndEdit, searchText, setSearchText };
