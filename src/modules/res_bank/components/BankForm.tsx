@@ -6,10 +6,11 @@ import BankSelect from './BankSelect';
 
 interface BankFormProps {
     bank?: Bank; // Para la edición, puede recibir una ubicación existente
+    onSuccess?: () => void; // Función opcional para manejar el éxito
   }
 
-const BankForm: React.FC<BankFormProps> = ({ bank }) => {
-  const { form, onFinish, loading, setFormValues } = useBankForm();
+const BankForm: React.FC<BankFormProps> = ({ bank, onSuccess }) => {
+  const { form, onFinish, loading, setFormValues } = useBankForm({ onSuccess });
 
   useEffect(() => {
     if (bank) {

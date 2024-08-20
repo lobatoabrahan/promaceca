@@ -5,16 +5,20 @@ import { Bank } from '../types/BankTypes';
 import { updateBank } from '../services/updateBank';
 import { createBank } from '../services/createBank';
 
-export const useBankForm = () => {
+interface UseBankFormProps {
+  onSuccess?: () => void; // Función opcional para manejar el éxito
+}
+
+export const useBankForm = ({ onSuccess }: UseBankFormProps = {}) => {
   const [form] = useForm();
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<Bank|null>(null)
+  const [data, setData] = useState<Bank | null>(null);
 
   const onFinish = useCallback(async (values: Bank) => {
     try {
       setLoading(true);
       if (data?.id) {
-        values.id = data.id
+        values.id = data.id;
         // Editar banco existente
         await updateBank(values);
         notification.success({
@@ -29,6 +33,9 @@ export const useBankForm = () => {
           description: 'Bank has been created successfully.',
         });
       }
+      if (onSuccess) {
+        onSuccess(); // Llama a la función de éxito si está definida
+      }
     } catch (error) {
       notification.error({
         message: 'Error',
@@ -38,12 +45,11 @@ export const useBankForm = () => {
     } finally {
       setLoading(false);
     }
-  }, [data]);
+  }, [data, onSuccess]);
 
   const setFormValues = useCallback((bank: Bank) => {
-    console.log(bank)
     form.setFieldsValue(bank);
-    setData(bank)
+    setData(bank);
   }, [form]);
 
   return { form, onFinish, setFormValues, loading };

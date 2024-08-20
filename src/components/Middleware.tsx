@@ -1,25 +1,24 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuthContext } from '../contexts/AuthContext';
 
 interface MiddlewareProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component: React.ComponentType<any>;
 }
 
 const Middleware: React.FC<MiddlewareProps> = ({ component: Component }) => {
-  const { user, loading } = useAuth();
+  const { currentUser } = useAuthContext();
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // Loading state can be handled here if needed
 
-  if (!user) {
+  if (!currentUser) {
     console.log('Middleware - Redirecting to /login');
     return <Navigate to="/login" />;
   }
 
-  console.log('Middleware - Rendering Dashboard');
+  console.log('Middleware - Rendering Protected Component');
   return <Component />;
 };
 
-export default Middleware
+export default Middleware;

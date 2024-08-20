@@ -20,13 +20,22 @@ import {
 import type { MenuProps } from 'antd';
 
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '@clerk/clerk-react';
 
 const { Header, Sider, Content } = Layout;
 
 const SidebarLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
   const { signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      // Puedes redirigir a una página específica después de cerrar sesión, si es necesario
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
+  };
 
   const {
     token: { colorBgContainer },
@@ -37,27 +46,27 @@ const SidebarLayout: React.FC = () => {
   const items: MenuProps['items'] = [
     {
       key: '1',
-      label: <a onClick={signOut}>Cerrar Sesion</a>,
+      label: <a onClick={handleSignOut}>Cerrar Sesion</a>,
     },
   ];
 
   const location = useLocation();
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
-  // Mapeo de rutas a claves de menú
+  // Efecto para actualizar las claves seleccionadas cuando cambia la ruta
+  useEffect(() => {
+
+    // Mapeo de rutas a claves de menú
   const routeToMenuKey: Record<string, string> = {
     '/dashboard': '1', // Dashboard
     '/bolsas': '2-1', // Bolsas dentro de Extrusion
     // Agrega más rutas y claves según tu aplicación
   };
 
-  // Efecto para actualizar las claves seleccionadas cuando cambia la ruta
-  useEffect(() => {
     const pathname = location.pathname;
     const keys = routeToMenuKey[pathname] ? [routeToMenuKey[pathname]] : [];
     setSelectedKeys(keys);
-    console.log(keys)
-  }, [location.pathname]);
+  }, [location.pathname]); // Incluye routeToMenuKey como dependencia
 
   return (
     <Layout

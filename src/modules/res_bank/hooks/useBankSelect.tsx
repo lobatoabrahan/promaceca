@@ -46,14 +46,17 @@ export const useBankSelect = () => {
       // Combina los datos en tiempo real con los datos existentes
       setOptions(prevBanks => {
         const updatedBanks = formatBankOptions(banks);
+
         // Utiliza un mapa para combinar bancos por ID
         const banksMap = new Map<number, { label: string; value: number }>(
           prevBanks.map(bank => [bank.value, bank])
         );
         updatedBanks.forEach(bank => banksMap.set(bank.value, bank));
-        return Array.from(banksMap.values());
+        const combinedBanks = Array.from(banksMap.values());
+        return combinedBanks;
       });
     }
+
   }, [banks, hasUpdates]);
 
   // Función para crear un nuevo banco
