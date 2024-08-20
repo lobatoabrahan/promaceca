@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Modal } from 'antd';
+import { Alert, Drawer } from 'antd';
 import { Bank } from '../types/BankTypes';
 import BankForm from './BankForm';
 import { useRealtimeBankById } from '../hooks/useBankRealtimeById';
 import { useQuery } from '@tanstack/react-query';
 import { fetchBankById } from '../services/fetchBankById';
 
-interface BankModalProps {
+interface BankDrawerProps {
     isOpen: boolean;
     onClose: () => void;
     id: number;
     onSuccess?: () => void; // Función opcional para manejar el éxito
 }
 
-const BankModal: React.FC<BankModalProps> = ({ isOpen, onClose, id, onSuccess }) => {
+const BankDrawer: React.FC<BankDrawerProps> = ({ isOpen, onClose, id, onSuccess }) => {
     const { bank: realtimeBank, hasUpdates } = useRealtimeBankById(id);
     const [bank, setBank] = useState<Bank | null>(null);
 
@@ -48,17 +48,17 @@ const BankModal: React.FC<BankModalProps> = ({ isOpen, onClose, id, onSuccess })
     if (isError) return <Alert message={(error as Error).message} type="error" />;
 
     return (
-        <Modal
+        <Drawer
 
             loading={isLoading}
             title={'Editar Banco'}
             open={isOpen}
-            onCancel={onClose}
+            onClose={onClose}
             footer={null} // No hay botones en el pie, los gestionamos en el formulario
         >
             <BankForm bank={bank ? bank : undefined} onSuccess={handleSuccess} />
-        </Modal>
+        </Drawer>
     );
 };
 
-export default BankModal;
+export default BankDrawer;

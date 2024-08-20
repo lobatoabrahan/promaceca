@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Select, Alert, Button } from 'antd';
-
+import { Select, Alert, Button, SelectProps } from 'antd';
+/* import { useNavigate } from 'react-router-dom';
+ */
 interface GlobalSelectProps {
   placeholder: string;
   value?: number;
@@ -14,7 +15,7 @@ interface GlobalSelectProps {
     setSearchText: (text: string) => void;
     searchText: string;
   };
-  ModalComponent: React.FC<{
+  DrawerComponent: React.FC<{
     isOpen: boolean;
     onClose: () => void;
     id: number; // Para pasar el ID de la entidad que se está editando
@@ -22,15 +23,18 @@ interface GlobalSelectProps {
   }>;
 }
 
-const GlobalSelect: React.FC<GlobalSelectProps> = ({ placeholder, value, onSelect, useCustomHook, ModalComponent }) => {
+const GlobalSelect: React.FC<GlobalSelectProps> = ({ placeholder, value, onSelect, useCustomHook, /* DrawerComponent */ }) => {
   const { options, loading, error, onCreate, onCreateAndEdit, setSearchText, searchText } = useCustomHook();
   const [selectLoading, setSelectLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
+/*   const navigate = useNavigate(); // Hook para la navegación
+ */
+/*   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+ *//*   const [editingId, setEditingId] = useState<number | null>(null);
+ */  const [selectOptions, setSelectOptions] = useState<SelectProps['options']>([])
 
   useEffect(() => {
-    console.log('Updated Options:', options); // Debugging: Check updated options
+    setSelectOptions([...options]); // Crea una nueva referencia
   }, [options]);
 
 
@@ -56,27 +60,35 @@ const GlobalSelect: React.FC<GlobalSelectProps> = ({ placeholder, value, onSelec
     setSelectLoading(true);
     try {
       const id = await onCreateAndEdit();
-      setEditingId(id);
-      onSelect(id);
+/*       setEditingId(id);
+ */      onSelect(id);
       setSelectLoading(false);
       setOpen(false);
-      setIsModalOpen(true); // Abre el modal para edición
+      window.open(`/contactos/banco/${id}`, '_blank'); // Abre la URL en una nueva pestaña
 
+/*       setIsDrawerOpen(true); // Abre el modal para edición
+ */
     } catch (error) {
       console.error("Failed to create and edit and select a new item:", error);
       setSelectLoading(false);
     }
   };
 
-  const handleSuccess = () => {
-    setIsModalOpen(false);
+  /* const handleSuccess = () => {
+    setIsDrawerOpen(false);
 
-  };
+  }; */
 
   if (error) return <Alert message={error} type="error" />;
 
   return (
     <div>
+      {/* <DrawerComponent
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        id={editingId ?? 0} // Pasa el ID del banco para edición, si está definido
+        onSuccess={handleSuccess}
+      /> */}
       <Select
         open={open}
         onDropdownVisibleChange={setOpen}
@@ -89,12 +101,12 @@ const GlobalSelect: React.FC<GlobalSelectProps> = ({ placeholder, value, onSelec
         allowClear
         loading={loading}
         filterOption={(input, option) => {
-          if (option && option.label) {
+          if (option && typeof option.label === 'string') {
             return option.label.toLowerCase().includes(input.toLowerCase());
           }
           return false;
         }}
-        options={options}
+        options={selectOptions}
         optionFilterProp="label"
         dropdownRender={menu => (
           <>
@@ -110,12 +122,7 @@ const GlobalSelect: React.FC<GlobalSelectProps> = ({ placeholder, value, onSelec
           </>
         )}
       />
-      <ModalComponent
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        id={editingId ?? 0} // Pasa el ID del banco para edición, si está definido
-        onSuccess={handleSuccess}
-      />
+      
     </div>
   );
 };

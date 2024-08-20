@@ -43,14 +43,15 @@ const ContactosSidebar: React.FC = () => {
   const location = useLocation();
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
-  const routeToMenuKey: Record<string, string> = {
-    '/contactos': '1',
-    '/contactos/etiquetas_de_contacto': '2-1',
-    '/contactos/titulos_de_contacto': '2-2',
-    // Agrega más rutas y claves según tu aplicación
-  };
+  
 
   useEffect(() => {
+    const routeToMenuKey: Record<string, string> = {
+      '/contactos': '1',
+      '/contactos/etiquetas_de_contacto': '2-1',
+      '/contactos/titulos_de_contacto': '2-2',
+      // Agrega más rutas y claves según tu aplicación
+    };
     const pathname = location.pathname;
     const keys = routeToMenuKey[pathname] ? [routeToMenuKey[pathname]] : [];
     setSelectedKeys(keys);

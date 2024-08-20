@@ -44,15 +44,16 @@ const AdministracionSidebar: React.FC = () => {
   const location = useLocation();
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
-  // Mapeo de rutas a claves de menú
+  
+
+  // Efecto para actualizar las claves seleccionadas cuando cambia la ruta
+  useEffect(() => {
+    // Mapeo de rutas a claves de menú
   const routeToMenuKey: Record<string, string> = {
     '/administracion/dashboard': '1', // Dashboard
     '/administracion/maquila': '2-1', // Bolsas dentro de Extrusion
     // Agrega más rutas y claves según tu aplicación
   };
-
-  // Efecto para actualizar las claves seleccionadas cuando cambia la ruta
-  useEffect(() => {
     const pathname = location.pathname;
     const keys = routeToMenuKey[pathname] ? [routeToMenuKey[pathname]] : [];
     setSelectedKeys(keys);
