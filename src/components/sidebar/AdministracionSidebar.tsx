@@ -21,14 +21,12 @@ import {
 import type { MenuProps } from 'antd';
 
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { useAuthContext } from '../../contexts/AuthContext';
 import { SignOutButton } from '@clerk/clerk-react';
 
 const { Header, Sider, Content } = Layout;
 
 const AdministracionSidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
-  const { currentUser } = useAuthContext();
 
   const {
     token: { colorBgContainer },

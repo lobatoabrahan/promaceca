@@ -7,18 +7,14 @@ import {
   Row,
   Skeleton,
   Pagination,
-  Flex,
-  Image,
   Button,
+  Space,
 } from 'antd';
 import { Partner } from '../../types';
 import { get_res_partner } from '../../services/ApiServices';
 import { supabase } from '../../supabase/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { UserOutlined } from '@ant-design/icons';
-import Title from 'antd/es/typography/Title';
-
-const { Search } = Input;
 
 const Contactos: React.FC = () => {
   const [partners, setPartners] = useState<Partner[]>([]);
@@ -29,6 +25,8 @@ const Contactos: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    setPageSize(50);
+
     // Fetch initial data
     const fetchPartners = async () => {
       setLoading(true);
@@ -39,8 +37,10 @@ const Contactos: React.FC = () => {
         // Ordenar los datos por el campo `name`
         const sortedData = data?.sort((a, b) => {
           // Compara los nombres
-          if (a.name < b.name) return -1;
-          if (a.name > b.name) return 1;
+          if (a.name && b.name) {
+            if (a.name < b.name) return -1;
+            if (a.name > b.name) return 1;
+          }
           return 0;
         });
 
@@ -59,7 +59,6 @@ const Contactos: React.FC = () => {
         { event: '*', schema: 'public', table: 'res_partner' },
         (payload) => {
           console.log('Change received!', payload);
-          // Handle partial updates
           handleRealtimeUpdate(payload);
         }
       )
@@ -71,6 +70,7 @@ const Contactos: React.FC = () => {
     };
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleRealtimeUpdate = (payload: any) => {
     setPartners((prevPartners) => {
       // Create a map of the existing partners
@@ -80,13 +80,17 @@ const Contactos: React.FC = () => {
 
       // Update or add the partner based on the payload
       const updatedPartner = payload.new;
-      partnersMap.set(updatedPartner.id, updatedPartner);
+      if (updatedPartner) {
+        partnersMap.set(updatedPartner.id, updatedPartner);
+      }
 
       // Convert map back to array
       return Array.from(partnersMap.values()).sort((a, b) => {
         // Compara los nombres
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
+        if (a.name && b.name) {
+          if (a.name < b.name) return -1;
+          if (a.name > b.name) return 1;
+        }
         return 0;
       });
     });
@@ -120,7 +124,7 @@ const Contactos: React.FC = () => {
     return (
       <Row gutter={16}>
         {Array.from({ length: pageSize }).map((_, index) => (
-          <Col span={8} key={index}>
+          <Col span={6} key={index}>
             <Card>
               <Skeleton loading={true} active>
                 <Card.Meta title="Loading..." description="Loading..." />
@@ -136,32 +140,16 @@ const Contactos: React.FC = () => {
     setCurrentPage(page);
   };
 
-  const fetchPartnerImages = async (partnerIds: number[]) => {
-    // Consulta para obtener imágenes relacionadas con los partners, filtrando por res_model
-    const { data, error } = await supabase
-      .from('ir_attachment')
-      .select('id, store_fname, mimetype, res_id')
-      .in('res_id', partnerIds)
-      .eq('res_model', 'res.partner'); // Filtrar por res_model
-
-    if (error) {
-      console.error('Error fetching images:', error);
-      return [];
-    }
-
-    return data;
-  };
-
   return (
     <div>
       <Row style={{ marginTop: 16 }} align={'middle'}>
         <Col span={8}>
-          <Flex align="center" gap={8}>
+          <Space>
             <Button type="primary" onClick={() => navigate('/contacto/nuevo')}>
               Nuevo
             </Button>
             <h3>Contactos</h3>
-          </Flex>
+          </Space>
         </Col>
         <Col span={8}>
           <Input
@@ -171,14 +159,14 @@ const Contactos: React.FC = () => {
           />
         </Col>
         <Col span={8}>
-          <Flex justify="end">
+          <Space style={{ float: 'right' }}>
             <Pagination
               current={currentPage}
               pageSize={pageSize}
               total={filteredPartners.length}
               onChange={handlePageChange}
             />
-          </Flex>
+          </Space>
         </Col>
       </Row>
       <Row gutter={[16, 16]}>
@@ -189,15 +177,14 @@ const Contactos: React.FC = () => {
               onClick={() => handleCardClick(partner)}
               bordered={true}
             >
-              <Flex align="center" gap={16}>
+              <Space align="center">
                 <Avatar
                   shape="square"
                   size={64}
-                  src={partner.profile_image || undefined}
-                  icon={!partner.profile_image && <UserOutlined />}
+                  icon={ <UserOutlined />}
                 />
-                <Card.Meta title={partner.name} description={partner.email} />
-              </Flex>
+                <Card.Meta title={partner.name || 'No Name'} description={partner.email || 'No Email'} />
+              </Space>
             </Card>
           </Col>
         ))}

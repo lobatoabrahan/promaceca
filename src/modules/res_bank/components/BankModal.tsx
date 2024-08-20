@@ -56,7 +56,7 @@ const BankModal: React.FC<BankModalProps> = ({ isOpen, onClose, id, onSuccess })
             onCancel={onClose}
             footer={null} // No hay botones en el pie, los gestionamos en el formulario
         >
-            <BankForm bank={bank} onSuccess={handleSuccess} />
+            <BankForm bank={bank ? bank : undefined} onSuccess={handleSuccess} />
         </Modal>
     );
 };

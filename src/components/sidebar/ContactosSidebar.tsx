@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  UploadOutlined,
   BookFilled,
   SettingFilled,
   UserOutlined,
@@ -21,14 +20,12 @@ import {
 import type { MenuProps } from 'antd';
 
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { useAuthContext } from '../../contexts/AuthContext';
 import { SignOutButton } from '@clerk/clerk-react';
 
 const { Header, Sider, Content } = Layout;
 
 const ContactosSidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
-  const { currentUser } = useAuthContext();
 
   const {
     token: { colorBgContainer },

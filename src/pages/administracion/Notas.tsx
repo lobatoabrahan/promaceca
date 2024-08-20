@@ -1,8 +1,6 @@
-import React from 'react'
 
-type Props = {}
 
-function Notas({}: Props) {
+function Notas() {
   return (
     <div>Notas</div>
   )

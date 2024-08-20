@@ -23,12 +23,13 @@ export const get_res_partner = async (): Promise<{
 }> => {
   try {
     const { data, error } = await supabase
-      .from<Partner>('res_partner')
+      .from('res_partner')
       .select('*');
     if (error) {
       throw new Error(error.message);
     }
     return { data, error: null };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return { data: null, error: error.message };
   }
@@ -46,7 +47,7 @@ export const postTransaccionInventario = async (data: object) => {
 
 export const fetchBank = async (id: number): Promise<Bank | null> => {
   const { data, error } = await supabase
-    .from<Bank>('res_bank')
+    .from('res_bank')
     .select('*')
     .eq('id', id)
     .single();
@@ -58,7 +59,7 @@ export const fetchBank = async (id: number): Promise<Bank | null> => {
 };
 
 export const fetchAllBanks = async (): Promise<Bank[] | null> => {
-  const { data, error } = await supabase.from<Bank>('res_bank').select('*');
+  const { data, error } = await supabase.from('res_bank').select('*');
   if (error) {
     console.error('Error fetching banks:', error);
     return null;
@@ -85,14 +86,14 @@ export const saveBank = async (
     if (isEdit && id) {
       // Actualizar banco existente
       ({ error } = await supabase
-        .from<Bank>('res_bank')
+        .from('res_bank')
         .update(bankData)
         .eq('id', id));
     } else {
       // Crear nuevo banco
       const { data, error: insertError } = await supabase
-        .from<Bank>('res_bank')
-        .upsert([bankData], { returning: 'representation' }) // Ensure returning the full representation
+        .from('res_bank')
+        .upsert([bankData]) // Ensure returning the full representation
         .select();
 
       if (data && data.length > 0) {

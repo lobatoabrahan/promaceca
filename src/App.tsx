@@ -13,7 +13,6 @@ import {
 import { AuthProvider } from './contexts/AuthContext';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import Bolsas from './pages/inventario/Bolsas';
 import DataProvider from './contexts/DataProvider';
 import { Realtime } from 'ably';
 import { AblyProvider, ChannelProvider } from 'ably/react';
@@ -25,8 +24,6 @@ import AdministracionSidebar from './components/sidebar/AdministracionSidebar';
 import AlmacenSidebar from './components/sidebar/AlmacenSidebar';
 import ContactosSidebar from './components/sidebar/ContactosSidebar';
 import Contactos from './pages/contactos/Contactos';
-import Contacto from './components/formularios/Contacto';
-import BankTable from './components/res_bank/BankTable';
 import BankEditPage from './modules/res_bank/pages/BankEditPage';
 import BankCreatePage from './modules/res_bank/pages/BankCreatePage';
 
@@ -60,7 +57,6 @@ const App: React.FC = () => {
                       <Route path="/system" element={<System />} />
                       <Route element={<AlmacenSidebar />}>
                         <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/bolsas" element={<Bolsas />} />
                       </Route>
                       <Route element={<AdministracionSidebar />}>
                         <Route
@@ -70,9 +66,9 @@ const App: React.FC = () => {
                       </Route>
                       <Route element={<ContactosSidebar />}>
                         <Route path="/contactos" element={<Contactos />} />
-                        <Route path="/contacto/:id" element={<Contacto/>} />
-                        <Route path="/contacto/nuevo" element={<Contacto/>} />
-                        <Route path="/contactos/bancos" element={<BankTable/>} />
+                        <Route path="/contacto/:id" element={<System/>} />
+                        <Route path="/contacto/nuevo" element={<System/>} />
+                        <Route path="/contactos/bancos" element={<System/>} />
                         <Route path="/contactos/banco/:id" element={<BankEditPage/>} />
                         <Route path="/contactos/banco/nuevo" element={<BankCreatePage/>} />
 
