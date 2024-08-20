@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { fetchAllBanks } from '../services/fetchAllBanks';
 import { formatBankOptions } from '../tools/formatBankOptions';
 import { useRealtimeBank } from './useBankRealtime';
-/* import { createBank } from '../services/createBank';
- */
+import { createBank } from '../services/createBank';
+
 export const useBankSelect = () => {
   const [options, setOptions] = useState<{ label: string; value: number }[]>([]);
   const [loading, setLoading] = useState(true);
@@ -11,7 +11,7 @@ export const useBankSelect = () => {
   const [searchText, setSearchText] = useState<string>('');
 
 
-  const { banks: realtimeBanks, hasUpdates } = useRealtimeBank();
+  const { banks, hasUpdates } = useRealtimeBank();
 
   useEffect(() => {
     const loadBanks = async () => {
@@ -45,7 +45,7 @@ export const useBankSelect = () => {
     if (hasUpdates) {
       // Combina los datos en tiempo real con los datos existentes
       setOptions(prevBanks => {
-        const updatedBanks = formatBankOptions(realtimeBanks);
+        const updatedBanks = formatBankOptions(banks);
         // Utiliza un mapa para combinar bancos por ID
         const banksMap = new Map<number, { label: string; value: number }>(
           prevBanks.map(bank => [bank.value, bank])
@@ -54,30 +54,27 @@ export const useBankSelect = () => {
         return Array.from(banksMap.values());
       });
     }
-  }, [realtimeBanks, hasUpdates]);
+  }, [banks, hasUpdates]);
 
   // Función para crear un nuevo banco
   const onCreate = async () => {
     try {
       if (searchText.trim() === '') {
-        throw new Error('Search text is empty. Cannot create a bank without a name.');
+        throw new Error('El texto de busqueda esta vacio.');
       }
 
-      // Simula una llamada a la API con un retraso de 3 segundos
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
       // Llama a la función para crear un nuevo banco en la base de datos
-      const newBank = 1; /* await createBank({ name: searchText }); */
+      const newBank = await createBank({ name: searchText });
 
       // Verifica si la creación fue exitosa
-      if (newBank === 1 /* && newBank.id */) {
-        return 1; // Devuelve el ID simulado del nuevo banco
+      if (newBank && newBank.id) {
+        return newBank.id; // Devuelve el ID simulado del nuevo banco
       } else {
-        throw new Error("Failed to create a new bank.");
+        throw new Error("Fallo al crear.");
       }
     } catch (error) {
       console.error(error);
-      throw new Error("Failed to create a new bank.");
+      throw new Error("Fallo al crear.");
     }
   };
 
@@ -86,23 +83,21 @@ export const useBankSelect = () => {
   const onCreateAndEdit = async () => {
     try {
       if (searchText.trim() === '') {
-        throw new Error('Search text is empty. Cannot create a bank without a name.');
+        throw new Error('El texto de busqueda esta vacio.');
       }
-      // Simula una llamada a la API con un retraso de 3 segundos
-      await new Promise((resolve) => setTimeout(resolve, 3000));
 
       // Llama a la función para crear un nuevo banco en la base de datos
-      const newBank = 1; /* await createBank({ name: searchText }); */
+      const newBank = await createBank({ name: searchText });
 
       // Verifica si la creación fue exitosa
-      if (newBank === 1 /* && newBank.id */) {
-        return 1; // Devuelve el ID simulado del nuevo banco
+      if (newBank && newBank.id) {
+        return newBank.id; // Devuelve el ID simulado del nuevo banco
       } else {
-        throw new Error("Failed to create a new bank.");
+        throw new Error("Fallo al crear");
       }
     } catch (error) {
       console.error(error);
-      throw new Error("Failed to create a new bank.");
+      throw new Error("Fallo al crear");
     }
   };
 
