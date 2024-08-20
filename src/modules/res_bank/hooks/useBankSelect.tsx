@@ -5,7 +5,7 @@ import { useRealtimeBank } from './useBankRealtime';
 /* import { createBank } from '../services/createBank';
  */
 export const useBankSelect = () => {
-  const [banks, setBanks] = useState<{ label: string; value: number }[]>([]);
+  const [options, setOptions] = useState<{ label: string; value: number }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string>('');
@@ -25,9 +25,9 @@ export const useBankSelect = () => {
 
         // Verifica que initialBanks sea un array y tenga elementos
         if (!Array.isArray(initialBanks) || initialBanks.length === 0) {
-          setBanks([]); // Establece un array vacío si no hay datos
+          setOptions([]); // Establece un array vacío si no hay datos
         } else {
-          setBanks(formatBankOptions(initialBanks));
+          setOptions(formatBankOptions(initialBanks));
         }
       } catch (err) {
         console.error(err); // Imprime el error en la consola para depuración
@@ -44,7 +44,7 @@ export const useBankSelect = () => {
   useEffect(() => {
     if (hasUpdates) {
       // Combina los datos en tiempo real con los datos existentes
-      setBanks(prevBanks => {
+      setOptions(prevBanks => {
         const updatedBanks = formatBankOptions(realtimeBanks);
         // Utiliza un mapa para combinar bancos por ID
         const banksMap = new Map<number, { label: string; value: number }>(
@@ -106,5 +106,5 @@ export const useBankSelect = () => {
     }
   };
 
-  return { banks, loading, error, onCreate, onCreateAndEdit, searchText, setSearchText };
+  return { options, loading, error, onCreate, onCreateAndEdit, searchText, setSearchText };
 };
