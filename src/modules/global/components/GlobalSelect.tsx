@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Select, Alert, Button, SelectProps } from 'antd';
-/* import { useNavigate } from 'react-router-dom';
- */
+import React, { useState, useCallback } from 'react';
+import { Select, Alert, Button } from 'antd';
+
 interface GlobalSelectProps {
   placeholder: string;
   value?: number;
   onSelect: (value: number) => void;
   useCustomHook: () => {
-    options: { label: string, value: number }[];
+    options: { label: string; value: number }[];
     loading: boolean;
     error: string | null;
     onCreate: () => Promise<number>;
@@ -18,77 +17,76 @@ interface GlobalSelectProps {
   DrawerComponent: React.FC<{
     isOpen: boolean;
     onClose: () => void;
-    id: number; // Para pasar el ID de la entidad que se está editando
-    onSuccess?: () => void; // Función opcional para manejar el éxito
+    id: number;
+    onSuccess?: () => void;
   }>;
+  isDrawerOpen: boolean;
+  setIsDrawerOpen: (open: boolean) => void;
 }
 
-const GlobalSelect: React.FC<GlobalSelectProps> = ({ placeholder, value, onSelect, useCustomHook, /* DrawerComponent */ }) => {
-  const { options, loading, error, onCreate, onCreateAndEdit, setSearchText, searchText } = useCustomHook();
+const GlobalSelect: React.FC<GlobalSelectProps> = ({
+  placeholder,
+  value,
+  onSelect,
+  useCustomHook,
+  DrawerComponent,
+  isDrawerOpen,
+  setIsDrawerOpen,
+}) => {
+  const {
+    options,
+    loading,
+    error,
+    onCreate,
+    onCreateAndEdit,
+    setSearchText,
+    searchText,
+  } = useCustomHook();
+
   const [selectLoading, setSelectLoading] = useState(false);
   const [open, setOpen] = useState(false);
-/*   const navigate = useNavigate(); // Hook para la navegación
- */
-/*   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
- *//*   const [editingId, setEditingId] = useState<number | null>(null);
- */  const [selectOptions, setSelectOptions] = useState<SelectProps['options']>([])
+  const [editingId, setEditingId] = useState<number | null>(null);
 
-  useEffect(() => {
-    setSelectOptions([...options]); // Crea una nueva referencia
-  }, [options]);
-
-
-  const handleSearch = (value: string) => {
+  const handleSearch = useCallback((value: string) => {
     setSearchText(value);
-  };
+  }, [setSearchText]);
 
-  const selectOnCreate = async () => {
+  const selectOnCreate = useCallback(async () => {
     setSelectLoading(true);
     try {
       const id = await onCreate();
       onSelect(id);
       setSelectLoading(false);
       setOpen(false);
-
     } catch (error) {
       console.error('Failed to create and select a new item:', error);
       setSelectLoading(false);
     }
-  };
+  }, [onCreate, onSelect]);
 
-  const selectOnCreateAndEdit = async () => {
+  const selectOnCreateAndEdit = useCallback(async () => {
     setSelectLoading(true);
     try {
       const id = await onCreateAndEdit();
-/*       setEditingId(id);
- */      onSelect(id);
+      setEditingId(id);
+      onSelect(id);
       setSelectLoading(false);
       setOpen(false);
-      window.open(`/contactos/banco/${id}`, '_blank'); // Abre la URL en una nueva pestaña
-
-/*       setIsDrawerOpen(true); // Abre el modal para edición
- */
+      setIsDrawerOpen(true);
     } catch (error) {
-      console.error("Failed to create and edit and select a new item:", error);
+      console.error('Failed to create, edit, and select a new item:', error);
       setSelectLoading(false);
     }
-  };
+  }, [onCreateAndEdit, onSelect, setIsDrawerOpen]);
 
-  /* const handleSuccess = () => {
+  const handleDrawerSuccess = useCallback(() => {
     setIsDrawerOpen(false);
-
-  }; */
+  }, [setIsDrawerOpen]);
 
   if (error) return <Alert message={error} type="error" />;
 
   return (
     <div>
-      {/* <DrawerComponent
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        id={editingId ?? 0} // Pasa el ID del banco para edición, si está definido
-        onSuccess={handleSuccess}
-      /> */}
       <Select
         open={open}
         onDropdownVisibleChange={setOpen}
@@ -99,30 +97,44 @@ const GlobalSelect: React.FC<GlobalSelectProps> = ({ placeholder, value, onSelec
         showSearch
         onSearch={handleSearch}
         allowClear
-        loading={loading}
+        loading={loading || selectLoading}
         filterOption={(input, option) => {
           if (option && typeof option.label === 'string') {
             return option.label.toLowerCase().includes(input.toLowerCase());
           }
           return false;
         }}
-        options={selectOptions}
+        options={options}
         optionFilterProp="label"
-        dropdownRender={menu => (
+        dropdownRender={(menu) => (
           <>
             {menu}
             <div style={{ display: 'flex', flexDirection: 'column', padding: 8 }}>
-              <Button loading={selectLoading} type="link" onClick={selectOnCreate}>
+              <Button
+                loading={selectLoading}
+                type="link"
+                onClick={selectOnCreate}
+              >
                 Create "{searchText}"
               </Button>
-              <Button loading={selectLoading} type="link" onClick={selectOnCreateAndEdit}>
+              <Button
+                loading={selectLoading}
+                type="link"
+                onClick={selectOnCreateAndEdit}
+              >
                 Create and edit "{searchText}"
               </Button>
             </div>
           </>
         )}
       />
-      
+
+      <DrawerComponent
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        id={editingId ?? 0}
+        onSuccess={handleDrawerSuccess}
+      />
     </div>
   );
 };
