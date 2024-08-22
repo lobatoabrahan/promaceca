@@ -1,12 +1,27 @@
-// hooks/useRealtimeBankById.ts
+// hooks/useBankWithRealtime.ts
 
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Bank } from '../types/BankTypes';
+import { fetchBankById } from '../services/fetchBankById';
 import { subscribeToBankChanges } from '../services/subscribeToBankChanges';
 
-export const useRealtimeBankById = (id: number | null) => {
+export const useBankRealtimeById = (id: number | null) => {
   const [bank, setBank] = useState<Bank | null>(null);
   const [hasUpdates, setHasUpdates] = useState<boolean>(false);
+
+  const { data, isLoading, isError, error } = useQuery<Bank | null, Error>({
+    queryKey: ['bank', id],
+    queryFn: () => fetchBankById(id!),
+    enabled: !!id, // Solo realiza la consulta si id está definido
+
+  });
+
+  useEffect(() => {
+    if (data) {
+      setBank(data);
+    }
+  }, [data]);
 
   useEffect(() => {
     if (id === null) return;
@@ -17,10 +32,6 @@ export const useRealtimeBankById = (id: number | null) => {
 
       switch (payload.eventType) {
         case 'INSERT':
-          if (payload.new.id === id) {
-            setBank(payload.new);
-          }
-          break;
         case 'UPDATE':
           if (payload.new.id === id) {
             setBank(payload.new);
@@ -36,7 +47,7 @@ export const useRealtimeBankById = (id: number | null) => {
       }
     };
 
-    const channel = subscribeToBankChanges(handleRealtimeUpdate,id);
+    const channel = subscribeToBankChanges(handleRealtimeUpdate, id);
 
     return () => {
       channel.unsubscribe();
@@ -52,5 +63,5 @@ export const useRealtimeBankById = (id: number | null) => {
     }
   }, [hasUpdates]);
 
-  return { bank, hasUpdates };
+  return { bank, isLoading, isError, error, hasUpdates };
 };
