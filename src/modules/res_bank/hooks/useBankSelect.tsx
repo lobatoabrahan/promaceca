@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { formatBankOptions } from '../tools/formatBankOptions';
 import { createBank } from '../services/createBank';
-import { useRealtimeBank } from './useBankRealtime';
+import { useBankRealtime } from './useBankRealtime';
 
 export const useBankSelect = () => {
   const [options, setOptions] = useState<{ label: string; value: number }[]>([]);
@@ -9,7 +9,7 @@ export const useBankSelect = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string>('');
 
-  const { banks, hasUpdates } = useRealtimeBank();
+  const { banks, hasUpdates } = useBankRealtime();
 
   useEffect(() => {
     // Update options when banks data is available or updated

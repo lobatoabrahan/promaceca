@@ -1,32 +1,29 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Bank } from '../types/BankTypes';
 import { fetchAllBanks } from '../services/fetchAllBanks';
 import subscribeToSupabaseChannel from '../../global/services/subscribeToSupabaseChannel';
+import { RealtimePayload } from '../../global/types/realtimePayload';
 
-export const useRealtimeBank = () => {
+export const useBankRealtime = () => {
   const [banks, setBanks] = useState<Bank[]>([]);
   const [hasUpdates, setHasUpdates] = useState<boolean>(false);
 
+  const { data, isLoading, isError, error } = useQuery<Bank[], Error>({
+    queryKey: ['banks'],
+    queryFn: fetchAllBanks,
+    
+  });
+
   useEffect(() => {
-    const loadBanks = async () => {
-      try {
-        const initialBanks = await fetchAllBanks();
-
-        // Verifica que initialBanks no sea undefined o null
-        if (!initialBanks) {
-          throw new Error('No banks data received');
-        }
-
-        setBanks(initialBanks);
-      } catch (err) {
-        console.error('Failed to load initial banks:', err);
-      }
-    };
-
-    loadBanks();
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleRealtimeUpdate = (payload: any) => {
+    if (data) {
+      setBanks(data);
+    }
+  }, [data]);
+  
+  useEffect(() => {
+    // Manejo de actualizaciones en tiempo real
+    const handleRealtimeUpdate = (payload: RealtimePayload<Bank>) => {
       setHasUpdates(true);
 
       switch (payload.eventType) {
@@ -37,7 +34,7 @@ export const useRealtimeBank = () => {
           setBanks(prev => prev.map(bank => bank.id === payload.new.id ? payload.new : bank));
           break;
         case 'DELETE':
-          setBanks(prev => prev.filter(bank => bank.id !== payload.old.id));
+          setBanks(prev => prev.filter(bank => bank.id !== payload.old?.id));
           break;
         default:
           break;
@@ -53,10 +50,10 @@ export const useRealtimeBank = () => {
 
   useEffect(() => {
     if (hasUpdates) {
-      // Puedes implementar lógica adicional para manejar actualizaciones, si es necesario
+      // Opcional: Implementar lógica adicional para manejar actualizaciones
       setHasUpdates(false);
     }
   }, [hasUpdates]);
 
-  return { banks, hasUpdates };
+  return { banks, isLoading, isError, error, hasUpdates };
 };
