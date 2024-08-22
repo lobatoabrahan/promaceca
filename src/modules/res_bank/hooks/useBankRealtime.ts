@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Bank } from '../types/BankTypes';
-import { subscribeToBankChanges } from '../services/subscribeToBankChanges';
 import { fetchAllBanks } from '../services/fetchAllBanks';
+import subscribeToSupabaseChannel from '../../global/services/subscribeToSupabaseChannel';
 
 export const useRealtimeBank = () => {
   const [banks, setBanks] = useState<Bank[]>([]);
@@ -44,7 +44,7 @@ export const useRealtimeBank = () => {
       }
     };
 
-    const channel = subscribeToBankChanges(handleRealtimeUpdate);
+    const channel = subscribeToSupabaseChannel(handleRealtimeUpdate, "res_bank");
 
     return () => {
       channel.unsubscribe();

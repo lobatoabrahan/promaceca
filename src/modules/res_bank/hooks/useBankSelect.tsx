@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { fetchAllBanks } from '../services/fetchAllBanks';
 import { formatBankOptions } from '../tools/formatBankOptions';
-import { useRealtimeBank } from './useBankRealtime';
 import { createBank } from '../services/createBank';
+import { useRealtimeBank } from './useBankRealtime';
 
 export const useBankSelect = () => {
   const [options, setOptions] = useState<{ label: string; value: number }[]>([]);
@@ -10,99 +9,75 @@ export const useBankSelect = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string>('');
 
-
   const { banks, hasUpdates } = useRealtimeBank();
 
   useEffect(() => {
-    const loadBanks = async () => {
-      try {
-        const initialBanks = await fetchAllBanks();
-
-        // Verifica que initialBanks no sea undefined o null
-        if (!initialBanks) {
-          throw new Error('No banks data received');
-        }
-
-        // Verifica que initialBanks sea un array y tenga elementos
-        if (!Array.isArray(initialBanks) || initialBanks.length === 0) {
-          setOptions([]); // Establece un array vacío si no hay datos
-        } else {
-          setOptions(formatBankOptions(initialBanks));
-        }
-      } catch (err) {
-        console.error(err); // Imprime el error en la consola para depuración
-        setError('Failed to load banks');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadBanks();
-
-  }, []);
+    // Update options when banks data is available or updated
+    if (banks.length > 0) {
+      setOptions(formatBankOptions(banks));
+      setLoading(false);
+    } else {
+      setLoading(false);
+      setOptions([]);
+    }
+  }, [banks]);
 
   useEffect(() => {
     if (hasUpdates) {
-      // Combina los datos en tiempo real con los datos existentes
-      setOptions(prevBanks => {
-        const updatedBanks = formatBankOptions(banks);
-
-        // Utiliza un mapa para combinar bancos por ID
-        const banksMap = new Map<number, { label: string; value: number }>(
-          prevBanks.map(bank => [bank.value, bank])
-        );
-        updatedBanks.forEach(bank => banksMap.set(bank.value, bank));
-        const combinedBanks = Array.from(banksMap.values());
-        return combinedBanks;
-      });
+      // If real-time updates are detected, refresh the options
+      setOptions(formatBankOptions(banks));
     }
+  }, [hasUpdates, banks]);
 
-  }, [banks, hasUpdates]);
-
-  // Función para crear un nuevo banco
+  // Function to create a new bank
   const onCreate = async () => {
-    try {
-      if (searchText.trim() === '') {
-        throw new Error('El texto de busqueda esta vacio.');
-      }
+    if (searchText.trim() === '') {
+      throw new Error('El texto de búsqueda está vacío.');
+    }
 
-      // Llama a la función para crear un nuevo banco en la base de datos
+    try {
       const newBank = await createBank({ name: searchText });
 
-      // Verifica si la creación fue exitosa
       if (newBank && newBank.id) {
-        return newBank.id; // Devuelve el ID simulado del nuevo banco
+        return newBank.id; // Return the new bank's ID
       } else {
-        throw new Error("Fallo al crear.");
+        throw new Error('Fallo al crear.');
       }
     } catch (error) {
       console.error(error);
-      throw new Error("Fallo al crear.");
+      setError('Fallo al crear.');
+      throw error;
     }
   };
 
-
-  // Función para crear un nuevo banco y abrir el modal de edición
+  // Function to create a new bank and open the edit modal
   const onCreateAndEdit = async () => {
-    try {
-      if (searchText.trim() === '') {
-        throw new Error('El texto de busqueda esta vacio.');
-      }
+    if (searchText.trim() === '') {
+      throw new Error('El texto de búsqueda está vacío.');
+    }
 
-      // Llama a la función para crear un nuevo banco en la base de datos
+    try {
       const newBank = await createBank({ name: searchText });
 
-      // Verifica si la creación fue exitosa
       if (newBank && newBank.id) {
-        return newBank.id; // Devuelve el ID simulado del nuevo banco
+        return newBank.id; // Return the new bank's ID
       } else {
-        throw new Error("Fallo al crear");
+        throw new Error('Fallo al crear.');
       }
     } catch (error) {
       console.error(error);
-      throw new Error("Fallo al crear");
+      setError('Fallo al crear.');
+      throw error;
     }
   };
 
-  return { options, loading, error, onCreate, onCreateAndEdit, searchText, setSearchText };
+  return {
+    options,
+    loading,
+    error,
+    onCreate,
+    onCreateAndEdit,
+    searchText,
+    setSearchText,
+  };
 };
