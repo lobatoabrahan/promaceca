@@ -26,6 +26,7 @@ import ContactosSidebar from './components/sidebar/ContactosSidebar';
 import Contactos from './pages/contactos/Contactos';
 import BankEditPage from './modules/res_bank/pages/BankEditPage';
 import BankCreatePage from './modules/res_bank/pages/BankCreatePage';
+import BankList from './modules/res_bank/pages/BankList';
 
 const App: React.FC = () => {
   const client = new Realtime({
@@ -68,7 +69,7 @@ const App: React.FC = () => {
                         <Route path="/contactos" element={<Contactos />} />
                         <Route path="/contacto/:id" element={<System/>} />
                         <Route path="/contacto/nuevo" element={<System/>} />
-                        <Route path="/contactos/bancos" element={<System/>} />
+                        <Route path="/contactos/bancos" element={<BankList/>} />
                         <Route path="/contactos/banco/:id" element={<BankEditPage/>} />
                         <Route path="/contactos/banco/nuevo" element={<BankCreatePage/>} />
 
