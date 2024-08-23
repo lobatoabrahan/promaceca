@@ -4,8 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Bank } from '../types/BankTypes';
 import { fetchBankById } from '../services/fetchBankById';
-import { RealtimePayload } from '../../global/types/realtimePayload';
 import subscribeToSupabaseChannel from '../../global/services/subscribeToSupabaseChannel';
+import { RealTimePayLoadTypes } from '../../global/types/realtimePayload';
 
 export const useBankRealtimeById = (id: number | null) => {
   const [bank, setBank] = useState<Bank | null>(null);
@@ -26,7 +26,7 @@ export const useBankRealtimeById = (id: number | null) => {
   useEffect(() => {
     if (id === null) return;
 
-    const handleRealtimeUpdate = (payload: RealtimePayload<Bank>) => {
+    const handleRealtimeUpdate = (payload: RealTimePayLoadTypes<Bank>) => {
       setHasUpdates(true); // Marca que hubo una actualización
 
       switch (payload.eventType) {

@@ -2,23 +2,12 @@ import React from 'react';
 import { Alert, Drawer } from 'antd';
 import BankForm from './BankForm';
 import { useBankRealtimeById } from '../hooks/useBankRealtimeById';
+import useOnFormSuccess from '../../global/hooks/useOnFormSuccess';
+import { DrawerPropsTypes } from '../../global/types/DrawerProps';
 
-interface BankDrawerProps {
-    isOpen: boolean;
-    onClose: () => void;
-    id: number;
-    onSuccess?: () => void; // Función opcional para manejar el éxito
-}
-
-const BankDrawer: React.FC<BankDrawerProps> = ({ isOpen, onClose, id, onSuccess }) => {
+const BankDrawer: React.FC<DrawerPropsTypes> = ({ isOpen, onClose, id, onSuccess }) => {
     const { bank, isLoading, isError, error } = useBankRealtimeById(id);
-
-    // Maneja el caso en el que el banco no esté disponible
-    const handleSuccess = () => {
-        if (onSuccess) {
-            onSuccess(); // Llama a la función de éxito si está definida
-        }
-    };
+    const handleSuccess = useOnFormSuccess(onSuccess)
 
     if (isError) return <Alert message={(error as Error).message} type="error" />;
 
@@ -28,7 +17,7 @@ const BankDrawer: React.FC<BankDrawerProps> = ({ isOpen, onClose, id, onSuccess 
             title="Editar Banco"
             open={isOpen}
             onClose={onClose}
-            footer={null} // No hay botones en el pie, los gestionamos en el formulario
+            footer={null}
         >
             <BankForm bank={bank ? bank : undefined} onSuccess={handleSuccess} />
         </Drawer>
