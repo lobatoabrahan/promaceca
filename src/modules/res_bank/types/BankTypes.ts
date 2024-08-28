@@ -1,5 +1,5 @@
 export interface Bank {
-    id?: number;
+    id: number;
     name: string;
     street?: string;
     street2?: string;
@@ -11,8 +11,8 @@ export interface Bank {
     phone?: string;
     active?: boolean;
     bic?: string;
-    create_date?: string;
-    write_date?: string
+    create_date?: Date;
+    write_date?: Date
     create_uid?: string
     write_uid?: string
   }

@@ -1,13 +1,7 @@
-import { supabase } from '../../../supabase/supabaseClient';
+import { fetch } from '../../global/services/fetch';
+import { bankMapperFromDatabase } from '../tools/bankMapperFromDatabase';
 import { Bank } from '../types/BankTypes';
 
 export const fetchAllBanks = async (): Promise<Bank[]> => {
-  const { data, error } = await supabase
-    .from('res_bank')
-    .select('*')
-    .order('name', { ascending: true });
-
-  if (error) throw new Error(error.message);
-
-  return data as Bank[];
+  return await fetch<Bank>('res_bank', bankMapperFromDatabase);
 };

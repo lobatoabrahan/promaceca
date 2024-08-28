@@ -1,23 +1,8 @@
-import { supabase } from '../../../supabase/supabaseClient';
-import { bankMapper } from '../tools/BankMappers';
+import { update } from '../../global/services/update';
+import { bankMapperToDatabase } from '../tools/bankMapperToDatabase';
 import { Bank } from '../types/BankTypes';
 
 export const updateBank = async (bank: Bank): Promise<Bank | null> => {
-  const mappedBank = bankMapper(bank);
-  
-  const { id, ...bankWithoutId } = mappedBank;
+  return update<Bank>('res_bank', bank, bankMapperToDatabase);
 
-  const { data, error } = await supabase
-    .from('res_bank')
-    .update(bankWithoutId) 
-    .eq('id', id) 
-    .select('*')
-    .single();
-
-  if (error) {
-    console.error('Error updating bank:', error.message);
-    throw new Error(`Failed to update bank: ${error.message}`);
-  }
-
-  return data as Bank;
 };
