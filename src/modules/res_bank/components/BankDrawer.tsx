@@ -6,14 +6,14 @@ import useOnFormSuccess from '../../global/hooks/useOnFormSuccess';
 import { DrawerPropsTypes } from '../../global/types/DrawerProps';
 
 const BankDrawer: React.FC<DrawerPropsTypes> = ({ isOpen, onClose, id, onSuccess }) => {
-    const { bank, isLoading, isError, error } = useBankRealtimeById(id);
+    const { bank, bankIsLoading, bankIsError, bankError } = useBankRealtimeById(id);
     const handleSuccess = useOnFormSuccess(onSuccess)
 
-    if (isError) return <Alert message={(error as Error).message} type="error" />;
+    if (bankIsError) return <Alert message={bankError?.message} type="error" />;
 
     return (
         <Drawer
-            loading={isLoading}
+            loading={bankIsLoading}
             title="Editar Banco"
             open={isOpen}
             onClose={onClose}
