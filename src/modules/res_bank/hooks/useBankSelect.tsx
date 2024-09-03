@@ -9,7 +9,7 @@ export const useBankSelect = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string>('');
 
-  const { banks, hasUpdates } = useBankRealtime();
+  const { banks, banksHasUpdates } = useBankRealtime();
 
   useEffect(() => {
     // Update options when banks data is available or updated
@@ -23,11 +23,11 @@ export const useBankSelect = () => {
   }, [banks]);
 
   useEffect(() => {
-    if (hasUpdates) {
+    if (banksHasUpdates) {
       // If real-time updates are detected, refresh the options
       setOptions(formatBankOptions(banks));
     }
-  }, [hasUpdates, banks]);
+  }, [banksHasUpdates, banks]);
 
   // Function to create a new bank
   const onCreate = async () => {

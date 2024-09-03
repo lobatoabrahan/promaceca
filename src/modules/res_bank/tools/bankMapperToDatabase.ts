@@ -1,4 +1,4 @@
-import { Bank } from "../types/BankTypes";
+import { BankToDatabase } from "../types/BankTypes";
 
 /**
  * Convierte datos de la base de datos a la entidad `Bank` y lanza un error si `name` es `undefined`.
@@ -6,7 +6,7 @@ import { Bank } from "../types/BankTypes";
  * @returns - Entidad `Bank` con valores `undefined` convertidos a `null`.
  * @throws - Error si `name` es `undefined`.
  */
-export const bankMapperToDatabase = (data: Partial<Bank>): Bank => {
+export const bankMapperToDatabase = (data: Partial<BankToDatabase>): BankToDatabase => {
   if (data.name === undefined) {
     throw new Error('The "name" field is required.');
   }
