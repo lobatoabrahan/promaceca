@@ -1,17 +1,7 @@
-import { supabase } from '../../../supabase/supabaseClient';
+import { fetchById } from '../../global/services/fetchById';
+import { bankMapperFromDatabase } from '../tools/bankMapperFromDatabase';
 import { Bank } from '../types/BankTypes';
 
 export const fetchBankById = async (id: number): Promise<Bank | null> => {
-  const { data, error } = await supabase
-    .from('res_bank')
-    .select('*')
-    .eq('id', id)
-    .single();
-
-  if (error) {
-    console.error('Error fetching bank by ID:', error.message);
-    return null;
-  }
-
-  return data as Bank;
+  return fetchById<Bank>(id, 'res_bank', bankMapperFromDatabase);
 };
