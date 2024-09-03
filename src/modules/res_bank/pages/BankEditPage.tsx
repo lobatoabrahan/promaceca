@@ -8,10 +8,10 @@ import { useBankRealtimeById } from '../hooks/useBankRealtimeById';
 const BankEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const bankId = id ? Number(id) : null;
-  const { bank, isLoading, isError, error } = useBankRealtimeById(bankId);
+  const { bank, bankIsLoading, bankIsError, bankError } = useBankRealtimeById(bankId);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error: {(error as Error).message}</p>;
+  if (bankIsLoading) return <p>Loading...</p>;
+  if (bankIsError) return <p>Error: {(bankError as Error).message}</p>;
 
   return (
     <div>
