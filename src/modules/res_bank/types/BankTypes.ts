@@ -18,7 +18,6 @@ export interface Bank {
   }
 
   export interface BankToDatabase {
-    id?: number;
     name: string;
     street?: string;
     street2?: string;

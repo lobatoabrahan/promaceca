@@ -1,83 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useSelect } from '../../global/hooks/useSelect';
+import { useBankRealtime } from './useBankRealtime';
 import { formatBankOptions } from '../tools/formatBankOptions';
 import { createBank } from '../services/createBank';
-import { useBankRealtime } from './useBankRealtime';
 
 export const useBankSelect = () => {
-  const [options, setOptions] = useState<{ label: string; value: number }[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [searchText, setSearchText] = useState<string>('');
-
   const { banks, banksHasUpdates } = useBankRealtime();
 
-  useEffect(() => {
-    // Update options when banks data is available or updated
-    if (banks.length > 0) {
-      setOptions(formatBankOptions(banks));
-      setLoading(false);
-    } else {
-      setLoading(false);
-      setOptions([]);
-    }
-  }, [banks]);
-
-  useEffect(() => {
-    if (banksHasUpdates) {
-      // If real-time updates are detected, refresh the options
-      setOptions(formatBankOptions(banks));
-    }
-  }, [banksHasUpdates, banks]);
-
-  // Function to create a new bank
-  const onCreate = async () => {
-    if (searchText.trim() === '') {
-      throw new Error('El texto de búsqueda está vacío.');
-    }
-
-    try {
-      const newBank = await createBank({ name: searchText });
-
-      if (newBank && newBank.id) {
-        return newBank.id; // Return the new bank's ID
-      } else {
-        throw new Error('Fallo al crear.');
-      }
-    } catch (error) {
-      console.error(error);
-      setError('Fallo al crear.');
-      throw error;
-    }
-  };
-
-  // Function to create a new bank and open the edit modal
-  const onCreateAndEdit = async () => {
-    if (searchText.trim() === '') {
-      throw new Error('El texto de búsqueda está vacío.');
-    }
-
-    try {
-      const newBank = await createBank({ name: searchText });
-
-      if (newBank && newBank.id) {
-        return newBank.id; // Return the new bank's ID
-      } else {
-        throw new Error('Fallo al crear.');
-      }
-    } catch (error) {
-      console.error(error);
-      setError('Fallo al crear.');
-      throw error;
-    }
-  };
-
-  return {
-    options,
-    loading,
-    error,
-    onCreate,
-    onCreateAndEdit,
-    searchText,
-    setSearchText,
-  };
+  return useSelect({
+    data: banks,
+    hasUpdates: banksHasUpdates,
+    formatOptions: formatBankOptions,
+    createEntity: createBank,
+  });
 };

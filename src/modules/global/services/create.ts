@@ -6,16 +6,18 @@ import { supabase } from '../../../supabase/supabaseClient';
  * @param tableName - Nombre de la tabla donde se va a insertar la entidad.
  * @param entity - La entidad que se va a insertar, sin incluir el ID.
  * @param mapper - (Opcional) Función para mapear los datos de la entidad antes de la inserción.
+ * @param mapperFromDatabase - (Opcional) Función para mapear los datos devueltos por la base de datos.
  * 
- * @returns - La entidad insertada con el ID asignado por la base de datos, o `null` si ocurre un error.
+ * @returns - La entidad insertada con el ID asignado por el servidor.
  */
-export const create = async <T extends object, U extends Omit<T, 'id'>>(
+export const create = async <T extends { id: number }, U>(
   tableName: string,
   entity: U,
-  mapper?: (entity: U) => T
-): Promise<T | null> => {
+  mapper?: (entity: U) => Partial<U>,
+  mapperFromDatabase?: (data: Partial<T>) => T
+): Promise<T> => {
   // Paso 1: Mapear la entidad si se proporciona un mapper
-  const mappedEntity = mapper ? mapper(entity) : (entity as unknown as T);
+  const mappedEntity = mapper ? mapper(entity) : (entity as unknown as Partial<U>);
 
   // Paso 2: Insertar la entidad en la base de datos
   const { data, error } = await supabase
@@ -26,10 +28,14 @@ export const create = async <T extends object, U extends Omit<T, 'id'>>(
 
   // Paso 3: Manejar errores
   if (error) {
-    console.error(`Error creating entity in table "${tableName}":`, error.message);
-    return null;
+    console.error(`Error creando entidad en la tabla "${tableName}":`, error.message);
+    throw new Error(`Falló la creación de la entidad en la tabla "${tableName}": ${error.message}`);
   }
 
-  // Paso 4: Retornar la entidad insertada
-  return data as T;
+  // Paso 4: Verificar que el resultado contiene un ID y retornar la entidad insertada
+  if (data) {
+    return mapperFromDatabase ? mapperFromDatabase(data) : (data as T);
+  } else {
+    throw new Error('Falló la creación de la entidad: No se retornó ID.');
+  }
 };

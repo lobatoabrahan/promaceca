@@ -12,7 +12,6 @@ export const bankMapperToDatabase = (data: Partial<BankToDatabase>): BankToDatab
   }
 
   return {
-    id: data.id,  // Valor predeterminado para id
     name: data.name,   // Se asegura que name siempre sea un string
     street: data.street,
     street2: data.street2,
