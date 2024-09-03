@@ -4,30 +4,10 @@ import { Alert, Button, Table } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
 import { Bank } from '../types/BankTypes';
 import { useNavigate } from 'react-router-dom';
-
-// Función para ordenar los datos con tipos seguros
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const sortData = <T extends Record<string, any>>(data: T[], columnKey: keyof T | undefined, order: 'ascend' | 'descend' | undefined) => {
-  if (!columnKey) return data;
-
-  return [...data].sort((a, b) => {
-    const valueA = a[columnKey];
-    const valueB = b[columnKey];
-
-    if (valueA === undefined || valueB === undefined) return 0;
-
-    if (typeof valueA === 'string' && typeof valueB === 'string') {
-      return order === 'ascend'
-        ? valueA.localeCompare(valueB)
-        : valueB.localeCompare(valueA);
-    }
-
-    return order === 'ascend' ? (valueA < valueB ? -1 : 1) : (valueA > valueB ? -1 : 1);
-  });
-};
+import { sortDataByString } from '../../global/tools/sortDataByString';
 
 const BankTable = () => {
-  const { banks, error, isError, isLoading } = useBankRealtime();
+  const { banks, banksError, banksIsError, banksIsLoading } = useBankRealtime();
   const navigate = useNavigate();
 
   // Estado para los datos ordenados
@@ -38,7 +18,7 @@ const BankTable = () => {
 
   const sortedBanks = useMemo(() => {
     return currentSorter.columnKey && currentSorter.order
-      ? sortData(banks, currentSorter.columnKey, currentSorter.order)
+      ? sortDataByString(banks, currentSorter.columnKey, currentSorter.order)
       : banks;
   }, [banks, currentSorter]);
 
@@ -98,14 +78,14 @@ const BankTable = () => {
     navigate(`/contactos/banco/${record.id}`);
   };
 
-  if (isError) return <Alert message={error?.message} type="error" />;
+  if (banksIsError) return <Alert message={banksError?.message} type="error" />;
 
   return (
     <Table
       rowKey="id"
       columns={columns}
       dataSource={sortedBanks}
-      loading={isLoading}
+      loading={banksIsLoading}
       pagination={{ pageSize: 10 }}
       onChange={onChange}
       onRow={(record) => ({
