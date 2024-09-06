@@ -1,51 +1,54 @@
 import { useForm } from 'antd/es/form/Form';
 import { useCallback, useState } from 'react';
 import { notification } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { Bank } from '../types/BankTypes';
 import { updateBank } from '../services/updateBank';
 import { createBank } from '../services/createBank';
 
 interface UseBankFormProps {
-  onSuccess?: () => void; // Función opcional para manejar el éxito
+  onSuccess?: () => void; 
 }
 
 export const useBankForm = ({ onSuccess }: UseBankFormProps = {}) => {
   const [form] = useForm();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Bank | null>(null);
+  const navigate = useNavigate(); 
 
   const onFinish = useCallback(async (values: Bank) => {
     try {
       setLoading(true);
       if (data?.id) {
         values.id = data.id;
-        // Editar banco existente
         await updateBank(values);
         notification.success({
-          message: 'Success',
-          description: 'Bank details have been updated successfully.',
+          message: 'Exito',
+          description: 'Los detalles del banco han sido actualizados.',
         });
       } else {
-        // Crear un nuevo banco
-        await createBank(values);
+        const newBank = await createBank(values);
         notification.success({
-          message: 'Success',
-          description: 'Bank has been created successfully.',
+          message: 'Exito',
+          description: 'Baanco ha sido creado exitosamente.',
         });
+        if (newBank?.id) {
+          navigate(`/contactos/banco/${newBank.id}`); 
+        }
       }
       if (onSuccess) {
-        onSuccess(); // Llama a la función de éxito si está definida
+        onSuccess(); 
       }
     } catch (error) {
       notification.error({
         message: 'Error',
-        description: 'There was an error saving the bank details. Please try again.',
+        description: 'Ha ocurrido un error al intentar crear o editar el banco. Por favor intente de nuevo',
       });
       console.error('Error:', error);
     } finally {
       setLoading(false);
     }
-  }, [data, onSuccess]);
+  }, [data, onSuccess, navigate]);
 
   const setFormValues = useCallback((bank: Bank) => {
     form.setFieldsValue(bank);
