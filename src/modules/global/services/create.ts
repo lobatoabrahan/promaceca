@@ -19,10 +19,22 @@ export const create = async <T extends { id: number }, U>(
   // Paso 1: Mapear la entidad si se proporciona un mapper
   const mappedEntity = mapper ? mapper(entity) : (entity as unknown as Partial<U>);
 
+  const storedUser = localStorage.getItem('user');
+  if (!storedUser) {
+    throw new Error('No se encontró el usuario en el localStorage');
+  }
+  const user = JSON.parse(storedUser);
+
   // Paso 2: Insertar la entidad en la base de datos
   const { data, error } = await supabase
     .from(tableName)
-    .insert([mappedEntity])
+    .insert([{
+      ...mappedEntity,
+      create_uid: user.id,
+      write_uid: user.id,
+      create_date: new Date(),
+      write_date: new Date(),
+    }])
     .select('*')
     .single();
 

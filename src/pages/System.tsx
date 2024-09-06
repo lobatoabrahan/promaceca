@@ -2,11 +2,19 @@ import { Flex } from 'antd';
 import { CreditCardFilled } from '@ant-design/icons';
 import { Typography } from 'antd';
 import { Link } from 'react-router-dom';
-import { SignOutButton } from '@clerk/clerk-react';
+import { SignOutButton, useUser } from '@clerk/clerk-react';
+import { useEffect } from 'react';
 
 const { Text } = Typography;
 
 const System = () => {
+  const { user } = useUser();
+  useEffect(() => {
+    if (user) {
+      // Guardar el user.id en localStorage cuando el usuario esté autenticado
+      localStorage.setItem('user', JSON.stringify(user));
+    }
+  }, [user]);
   return (
     <div>
       <Flex
