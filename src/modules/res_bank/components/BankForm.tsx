@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { useBankForm } from '../hooks/useBankForm';
 import { Bank } from '../types/BankTypes';
-import BankSelect from './BankSelect';
+import CountrySelect from '../../res_country/components/CountrySelect';
 
 interface BankFormProps {
-    bank?: Bank; // Para la edición, puede recibir una ubicación existente
-    onSuccess?: () => void; // Función opcional para manejar el éxito
-  }
+  bank?: Bank; // Para la edición, puede recibir una ubicación existente
+  onSuccess?: () => void; // Función opcional para manejar el éxito
+}
 
 const BankForm: React.FC<BankFormProps> = ({ bank, onSuccess }) => {
   const { form, onFinish, loading, setFormValues } = useBankForm({ onSuccess });
@@ -22,16 +22,7 @@ const BankForm: React.FC<BankFormProps> = ({ bank, onSuccess }) => {
     <Form
       form={form}
       onFinish={onFinish}
-    >      
-    <Form.Item
-        name="bank"
-        label="Seleccione un banco"
-      >
-        <BankSelect
-          onSelect={(value) => form.setFieldsValue({ bank: value })}
-          value={form.getFieldValue('bank')}
-        />
-      </Form.Item>
+    >
       <Form.Item
         label="Name"
         name="name"
@@ -76,10 +67,13 @@ const BankForm: React.FC<BankFormProps> = ({ bank, onSuccess }) => {
       </Form.Item>
 
       <Form.Item
-        label="Country"
         name="country"
+        label="Seleccione un Pais"
       >
-        <Input />
+        <CountrySelect
+          onSelect={(value) => form.setFieldsValue({ country: value })}
+          value={form.getFieldValue('country')}
+        />
       </Form.Item>
 
       <Form.Item

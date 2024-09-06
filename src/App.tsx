@@ -27,6 +27,8 @@ import Contactos from './pages/contactos/Contactos';
 import BankEditPage from './modules/res_bank/pages/BankEditPage';
 import BankCreatePage from './modules/res_bank/pages/BankCreatePage';
 import BankList from './modules/res_bank/pages/BankList';
+import CountryEditPage from './modules/res_country/pages/CountryEditPage';
+import CountryCreatePage from './modules/res_country/pages/CountryCreatePage';
 
 const App: React.FC = () => {
   const client = new Realtime({
@@ -48,7 +50,7 @@ const App: React.FC = () => {
                 <DataProvider>
                   <SignedOut>
                     <Routes>
-                    <Route path="/" element={<Navigate to="/login" />} />
+                      <Route path="/" element={<Navigate to="/login" />} />
                       <Route path="/login" element={<Login />} />
                     </Routes>
                   </SignedOut>
@@ -67,12 +69,13 @@ const App: React.FC = () => {
                       </Route>
                       <Route element={<ContactosSidebar />}>
                         <Route path="/contactos" element={<Contactos />} />
-                        <Route path="/contacto/:id" element={<System/>} />
-                        <Route path="/contacto/nuevo" element={<System/>} />
-                        <Route path="/contactos/bancos" element={<BankList/>} />
-                        <Route path="/contactos/banco/:id" element={<BankEditPage/>} />
-                        <Route path="/contactos/banco/nuevo" element={<BankCreatePage/>} />
-
+                        <Route path="/contacto/:id" element={<System />} />
+                        <Route path="/contacto/nuevo" element={<System />} />
+                        <Route path="/contactos/bancos" element={<BankList />} />
+                        <Route path="/contactos/banco/:id" element={<BankEditPage />} />
+                        <Route path="/contactos/banco/nuevo" element={<BankCreatePage />} />
+                        <Route path="/contactos/pais/:id" element={<CountryEditPage />} />
+                        <Route path="/contactos/pais/nuevo" element={<CountryCreatePage />} />
                       </Route>
                     </Routes>
                   </SignedIn>
