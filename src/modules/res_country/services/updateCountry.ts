@@ -1,5 +1,5 @@
 import { update } from '../../global/services/update';
-import { countryMapperFromDatabase } from '../tools/countryMapperFromDatabase';
+import { countryMapperFromDatabase } from '../tools/countryMapper';
 import { Country } from '../types/CountryTypes';
 
 export const updateCountry = async (country: Country): Promise<Country | null> => {

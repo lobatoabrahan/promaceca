@@ -1,6 +1,5 @@
 import { create } from '../../global/services/create';
-import { countryMapperFromDatabase } from '../tools/countryMapperFromDatabase';
-import { countryMapperToDatabase } from '../tools/countryMapperToDatabase';
+import { countryMapperFromDatabase, countryMapperToDatabase } from '../tools/countryMapper';
 import { Country, CountryToDatabase } from '../types/CountryTypes';
 
 /**

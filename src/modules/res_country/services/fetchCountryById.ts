@@ -1,5 +1,5 @@
 import { fetchById } from '../../global/services/fetchById';
-import { countryMapperFromDatabase } from '../tools/countryMapperFromDatabase';
+import { countryMapperFromDatabase } from '../tools/countryMapper';
 import { Country } from '../types/CountryTypes';
 
 export const fetchCountryById = async (id: number): Promise<Country | null> => {
