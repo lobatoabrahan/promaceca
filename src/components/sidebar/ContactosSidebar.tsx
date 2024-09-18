@@ -136,8 +136,16 @@ const ContactosSidebar: React.FC = () => {
                         {
                           key: '2-4-1',
                           label: (
-                            <Link to="/contactos/etiquetas_de_contacto">
-                              Etiquetas de contacto
+                            <Link to="/contactos/paises">
+                              Paises
+                            </Link>
+                          ),
+                        },
+                        {
+                          key: '2-4-2',
+                          label: (
+                            <Link to="/contactos/estados">
+                              Estados
                             </Link>
                           ),
                         },

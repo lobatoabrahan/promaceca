@@ -4,7 +4,7 @@ export const formatCountryOptions = (data: Country[]): { label: string; value: n
   return data
     .filter(data => data.id !== undefined) // Filtra los bancos sin ID
     .map(data => ({
-        label: data?.code ? `${data.name.es_VE} - ${data.code}` : data.name.es_VE,
+        label: data?.code ? `${data.name} - ${data.code}` : data.name,
         value: data.id as number, // Asegúrate de que el valor sea un número
     }));
 };

@@ -3,7 +3,7 @@ export interface Country {
     currency_id?: number;
     phone_code?:number;
     code?: string;
-    name: { [languageCode: string]: string };
+    name: string ;
     create_date?: Date;
     write_date?: Date
     create_uid?: string
@@ -14,7 +14,7 @@ export interface Country {
     currency_id?: number;
     phone_code?:number;
     code?: string;
-    name: { [languageCode: string]: string };
+    name: string ;
     create_date?: Date;
     write_date?: Date
     create_uid?: string

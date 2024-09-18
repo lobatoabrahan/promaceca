@@ -29,6 +29,7 @@ import BankCreatePage from './modules/res_bank/pages/BankCreatePage';
 import BankList from './modules/res_bank/pages/BankList';
 import CountryEditPage from './modules/res_country/pages/CountryEditPage';
 import CountryCreatePage from './modules/res_country/pages/CountryCreatePage';
+import CountryList from './modules/res_country/pages/CountryList';
 
 const App: React.FC = () => {
   const client = new Realtime({
@@ -76,6 +77,7 @@ const App: React.FC = () => {
                         <Route path="/contactos/banco/nuevo" element={<BankCreatePage />} />
                         <Route path="/contactos/pais/:id" element={<CountryEditPage />} />
                         <Route path="/contactos/pais/nuevo" element={<CountryCreatePage />} />
+                        <Route path="/contactos/paises" element={<CountryList />} />
                       </Route>
                     </Routes>
                   </SignedIn>

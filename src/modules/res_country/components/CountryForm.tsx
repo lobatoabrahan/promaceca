@@ -25,7 +25,7 @@ const CountryForm: React.FC<BankFormProps> = ({ country, onSuccess }) => {
 
       <Form.Item
         label="Name"
-        name={['name', 'es_VE']} // Notación para campos anidados
+        name={['name']} // Notación para campos anidados
         rules={[{ required: true, message: 'Por favor introduzca el nombre del país!' }]}
       >
         <Input />
