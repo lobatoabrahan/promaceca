@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useCountryRealtimeById } from '../hooks/useCountryRealtimeById';
 import CountryForm from '../components/CountryForm';
+import { useCountryRealtimeById } from '../hooks/useCountryRealtime';
 
 const CountryEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();

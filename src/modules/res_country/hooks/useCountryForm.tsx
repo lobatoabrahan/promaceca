@@ -3,8 +3,7 @@ import { useCallback, useState } from 'react';
 import { notification } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { Country } from '../types/CountryTypes';
-import { updateCountry } from '../services/updateCountry';
-import { createCountry } from '../services/createCountry';
+import { createCountry, updateCountry } from '../services/countryServices';
 
 interface UseCountryFormProps {
   onSuccess?: () => void; 
